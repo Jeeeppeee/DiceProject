@@ -10,7 +10,7 @@ public class RollOneDie {
         printRules();
         System.out.println();
 
-        playOneDie();
+        playTwoDie();
 
         System.out.println();
         System.out.println("Tak for at spille, rul en terning.");
@@ -23,10 +23,11 @@ public class RollOneDie {
         System.out.println("=====================================================");
     }
 
-    private static void playOneDie() {
+    private static void playTwoDie() {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Rul en terning? ('ja/nej') ");
         String answer = scanner.nextLine();
+
         while (!answer.equals("nej")) {
             int face = rollDie();
             System.out.println("Du rullede: " + face);
