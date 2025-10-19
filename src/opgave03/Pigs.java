@@ -5,6 +5,8 @@ import java.util.Scanner;
 public class Pigs {
     private static int player1Sum = 0;
     private static int player2Sum = 0;
+    // Feedback: Forvirrende tilstandsstyring. Flere variable (`player1Turn`, `switchTurn`, `turn` i playOneDie)
+    // bruges til at styre spillets flow, hvilket gør koden svær at følge.
     private static boolean player1Turn = true;
     private static boolean switchTurn = false;
     private static int tempSum = 0;
@@ -37,6 +39,19 @@ public class Pigs {
         System.out.println("=====================================================");
     }
 
+    /*
+     * Feedback
+     *
+     * 1. FORKERT LOGISK FLOW: Turens point (`tempSum`) opdateres FØR, der tjekkes for 1'ere.
+     *    Den korrekte rækkefølge er: kast -> tjek for 1'ere -> HVIS ingen 1'ere, opdater `tempSum`.
+     *    Koden virker kun "tilfældigt", fordi `updateStatistics` nulstiller `tempSum` bagefter.
+     *
+     * 2. SPREDT LOGIK: Spillets logik er spredt ud over `playOneDie`, `rollDice` og `updateStatistics`.
+     *    Dette gør koden ekstremt svær at forstå og vedligeholde.
+     *
+     * 3. DÅRLIG LØKKESTYRING: Den indre `while`-løkke styres af en `answer`-streng, som bliver
+     *    nulstillet med et hack (`answer = "a"`). En boolean-flag eller do-while-løkke ville være bedre.
+     */
     private static void playOneDie() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Hvor mange point vil i spille til?");
@@ -49,6 +64,7 @@ public class Pigs {
         while (player1Sum < input && player2Sum < input) {
             tempSum = 0;
 
+            // Løkkestyringen er forvirrende og bruger et hack (`answer = "a"`)
             while (!answer.equals("nej") && switchTurn == false) {
                 if (turn % 2 == 0) {
                     System.out.println("Det er Spiller1's tur");
@@ -86,13 +102,15 @@ public class Pigs {
                 player2Nævner++;
             }
             switchTurn = false;
-            answer = "a";
+            answer = "a"; // Hack for at næste tur kan starte
             turn++;
         }
 
 
     }
 
+    // Feedback: Denne metode bør kun rulle terningerne.
+    // At opdatere `tempSum` her er forkert, da det sker FØR, der tjekkes for 1'ere.
     private static int[] rollDice(int[] face) {
         for (int i = 0; i < face.length; i++) {
             face[i] = (int) (Math.random() * 6 + 1);
@@ -101,6 +119,9 @@ public class Pigs {
         return face;
     }
 
+    // Feedback LOGIK: Metodens navn er misvisende, da den indeholder central spil-logik.
+    // Logikken for at håndtere 1'ere bør være i `playOneDie`-metoden.
+    // De separate `if`-betingelser er også skrøbelige; en `if-else if` ville være bedre.
     private static void updateStatistics(int[] face) {
         if (face[0] == 1 && face[1] == 1 && player1Turn == true) {
             player1Sum = 0;
@@ -110,6 +131,7 @@ public class Pigs {
             player2Sum = 0;
             switchTurn = true;
         }
+        // Denne betingelse er også sand, hvis der slås to 1'ere.
         if (face[0] == 1 || face[1] == 1) {
             tempSum = 0;
             switchTurn = true;
@@ -127,9 +149,9 @@ public class Pigs {
             System.out.println("Spiller2 vinder");
             System.out.println("===============");
         }
+
         System.out.println("Spiller1 lavede i gennemsnit " + 1.0 * player1Tæller / player1Nævner + " kast per runde");
         System.out.println("Spiller2 lavede i gennemsnit " + 1.0 * player2Tæller / player2Nævner + " kast per runde");
 
     }
-
 }

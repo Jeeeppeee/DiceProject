@@ -44,7 +44,11 @@ public class RollTwoDie {
             if (face[0] == face[1]) {
                 doubleCount++;
             }
+
+            // Feedback: Summen af det nuværende kast (currentSum) bliver lagt til totalSum for anden gang.
+            // Dette vil medføre, at den endelige sum bliver dobbelt så høj som den korrekte værdi.
             totalSum += currentSum; //læg til total sum
+
             if (currentSum > highestEye) {
                 highestEye = currentSum;
             }
@@ -61,6 +65,10 @@ public class RollTwoDie {
         return face[0] + face[1];
     }
 
+    // Feedback: Projektbeskrivelsen foreslår en metode `public static int[] rollDice()`,
+    // der returnerer et nyt array. Denne implementering bruger i stedet en metode,
+    // der modificerer et eksisterende array (`rollDie(int[] face)`).
+    // Selvom det virker, er det en anden tilgang end den foreslåede.
     private static int[] rollDie(int[] face) {
         for (int i = 0; i < face.length; i++) {
             face[i] = (int) (Math.random() * 6 + 1);
